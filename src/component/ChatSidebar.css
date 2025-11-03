@@ -1,0 +1,33 @@
+.chat-sidebar {
+  width: 320px;
+  border-left: 1px solid #eee;
+  display: flex;
+  flex-direction: column;
+}
+.chat-history {
+  flex: 1;
+  overflow: auto;
+  padding: 12px;
+}
+.chat-msg.user {
+  text-align: right;
+}
+.chat-msg.bot {
+  text-align: left;
+}
+.msg-text {
+  display: inline-block;
+  padding: 8px 12px;
+  border-radius: 12px;
+  background: #f0f2f5;
+  margin: 6px 0;
+}
+.chat-input {
+  padding: 8px;
+  display: flex;
+  gap: 8px;
+}
+.chat-input input {
+  flex: 1;
+  padding: 8px;
+}
