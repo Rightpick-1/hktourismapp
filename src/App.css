@@ -1,161 +1,181 @@
-@import "leaflet/dist/leaflet.css";
-
+html,
 body {
+  height: 100%;
   margin: 0;
-  font-family: "Segoe UI", Roboto, sans-serif;
-  background: linear-gradient(180deg, #e9f3ff 0%, #f9fbff 100%);
-  color: #222;
+  overflow: hidden; /* Prevent double scrollbars */
+  font-family: "Inter", sans-serif;
+  background-color: #f9fafc;
+}
+.hero-section {
+  width: 100%;
+  height: 45vh;
+  background-size: cover;
+  background-position: center;
+  border-radius: 16px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  margin-bottom: 2rem;
 }
 
-.app {
+.hero-overlay {
+  background: rgba(0, 0, 0, 0.3);
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.hero-content {
   text-align: center;
-  padding: 30px;
-  max-width: 900px;
-  margin: 0 auto;
+  color: white;
+  max-width: 800px;
+  padding: 20px;
 }
 
-h1 {
-  color: #0056b3;
-  font-size: 2rem;
+.hero-title-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
   margin-bottom: 10px;
 }
 
-.weather {
-  background: #e2ebff;
-  padding: 15px 20px;
-  border-radius: 10px;
-  display: inline-block;
-  margin-top: 15px;
-  font-size: 1rem;
+.hero-title {
+  font-size: 2.2rem;
+  font-weight: 700;
+  color: #fff;
 }
 
-h2 {
-  margin-top: 40px;
-  font-size: 1.5rem;
-  color: #003d91;
+.hero-subtitle {
+  font-size: 1.1rem;
+  opacity: 0.9;
+  margin-bottom: 20px;
 }
 
-.cards {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 20px;
-  margin-top: 20px;
+.hero-stats {
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+  margin-top: 1.5rem;
 }
 
-.card {
-  background: #fff;
+.hero-stat-card {
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(8px);
   border-radius: 12px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-  padding: 20px;
-  text-align: left;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-  border: 1px solid #dbe7ff;
-}
-
-.card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
-}
-
-.card h3 {
-  margin: 0;
-  color: #0056b3;
-  font-size: 1.2rem;
-}
-
-.card p {
-  color: #555;
-  margin: 8px 0;
-  font-size: 0.95rem;
-}
-
-.card a {
-  display: inline-block;
-  margin-top: 8px;
-  color: #0066cc;
-  text-decoration: none;
-  font-weight: 500;
-}
-
-.card a:hover {
-  text-decoration: underline;
-}
-
-.loading {
+  padding: 10px 18px;
   text-align: center;
-  margin-top: 100px;
-  font-size: 1.2rem;
-  color: #0056b3;
+  color: #fff;
+  min-width: 100px;
 }
+
+.hero-stat-label {
+  font-size: 0.8rem;
+  opacity: 0.8;
+}
+
+.hero-stat-value {
+  font-size: 1.4rem;
+  font-weight: 600;
+}
+
+/* Main app layout */
+.app-container {
+  display: flex;
+  flex-direction: row;
+  height: 100vh; /* Fill full viewport */
+  overflow: hidden;
+}
+
+/* Left: main content */
+.main-content {
+  flex: 3; /* Adjust ratio depending on how wide you want the left side */
+  height: 100vh;
+  overflow-y: auto;
+  box-sizing: border-box;
+  padding: 2rem;
+  background-color: #f9fafc;
+  scroll-behavior: smooth;
+}
+
+/* Optional styling for the left content */
+.main-content h1 {
+  font-size: 1.8rem;
+  margin-bottom: 1rem;
+}
+
 .controls {
   display: flex;
   gap: 10px;
   margin-bottom: 20px;
-  align-items: center;
 }
 
-.search-bar,
-.district-dropdown,
-.clear-btn {
-  padding: 8px;
-  font-size: 16px;
+.controls input,
+.controls select {
+  padding: 10px;
   border-radius: 8px;
   border: 1px solid #ccc;
 }
 
 .clear-btn {
-  background-color: #f66;
+  background-color: #f04e4e;
   color: white;
   border: none;
+  border-radius: 8px;
+  padding: 10px 16px;
   cursor: pointer;
-  transition: 0.3s;
 }
 
 .clear-btn:hover {
-  background-color: #d33;
+  background-color: #d83f3f;
 }
+
 .view-toggle {
   display: flex;
-  justify-content: center;
   gap: 10px;
-  margin: 20px auto;
+  margin-bottom: 20px;
 }
 
 .view-toggle button {
-  background-color: #f5f5f5;
-  color: #333;
-  border: 2px solid #ddd;
+  padding: 10px 16px;
+  border: 1px solid #ccc;
   border-radius: 8px;
-  padding: 10px 18px;
-  font-size: 15px;
-  font-weight: 500;
   cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-.view-toggle button:hover {
-  background-color: #eaeaea;
-  border-color: #ccc;
+  background-color: white;
 }
 
 .view-toggle button.active {
   background-color: #007bff;
   color: white;
   border-color: #007bff;
-  box-shadow: 0 0 6px rgba(0, 123, 255, 0.4);
 }
+
+/* Right: chat sidebar */
 .chat-sidebar-container {
-  display: flex;
-  flex-direction: column;
-  flex: 1; /* take up remaining space on the right */
-  max-width: 350px; /* optional: limit width */
-  height: 80vh; /* match main content height */
-  position: sticky; /* stays visible when scrolling */
-  top: 1rem; /* offset from top if needed */
-  background-color: #f7f7f7;
-  border: 1px solid #ccc;
-  border-radius: 10px;
-  padding: 0.5rem;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  overflow-y: auto; /* scroll if content exceeds height */
+  flex: 1; /* Adjust ratio */
+  height: 100vh;
+  background-color: #ffffff;
+  border-left: 1px solid #e0e0e0;
+  box-shadow: -4px 0 10px rgba(0, 0, 0, 0.05);
+  overflow-y: auto;
+  position: sticky;
+  top: 0;
+  scroll-behavior: smooth;
+  padding: 1.5rem;
+}
+
+/* Make scrollbars look subtle and clean */
+.main-content::-webkit-scrollbar,
+.chat-sidebar-container::-webkit-scrollbar {
+  width: 8px;
+}
+
+.main-content::-webkit-scrollbar-thumb,
+.chat-sidebar-container::-webkit-scrollbar-thumb {
+  background-color: rgba(0, 0, 0, 0.2);
+  border-radius: 4px;
 }

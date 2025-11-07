@@ -8,6 +8,8 @@ import "leaflet/dist/leaflet.css";
 import MapWithPins from "./component/MapView";
 import ForecastCard from "./component/ForecastCard";
 import ChatSidebar from "./component/ChatSidebar";
+import { motion } from "framer-motion";
+import { Sparkles } from "lucide-react";
 
 function App() {
   const [userPos, setUserPos] = useState(null);
@@ -242,66 +244,143 @@ function App() {
   if (!weather || !userPos) return <p className="loading">Loading...</p>;
 
   return (
-    <div className="app">
-      <h1>🏙️ HK Real-Time Tourism Recommender</h1>
-      <div className="controls">
-        <input
-          type="text"
-          placeholder="Search area, attraction, or address"
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-          className="search-bar"
-        />
-
-        <select
-          value={selectedDistrict}
-          onChange={(e) => setSelectedDistrict(e.target.value)}
-          className="district-dropdown"
-        >
-          <option value="">Select a district</option>
-          <option value="Kowloon">Kowloon</option>
-          <option value="Mong Kok">Mong Kok</option>
-          <option value="Wong Tai Sin">Wong Tai Sin</option>
-          <option value="Sham Shui Po">Sham Shui Po</option>
-          <option value="Lantau">Lantau</option>
-        </select>
-
-        <button
-          className="clear-btn"
-          onClick={() => {
-            setSearchQuery("");
-            setSelectedDistrict("");
+    <div className="app-container">
+      <div className="main-content">
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          className="hero-section"
+          style={{
+            backgroundImage: `linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.6)), url('https://images.unsplash.com/photo-1646062142799-73dd49cf315a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxob25nJTIwa29uZyUyMHNreWxpbmV8ZW58MXx8fHwxNzYyMjI3NTg1fDA&ixlib=rb-4.1.0&q=80&w=1080')`,
           }}
         >
-          Clear Filters
-        </button>
+          <div className="hero-overlay">
+            <div className="hero-content">
+              <motion.div
+                initial={{ y: -20, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                transition={{ delay: 0.2 }}
+                className="hero-title-wrapper"
+              >
+                <Sparkles
+                  style={{ width: "2rem", height: "2rem", color: "#fcd34d" }}
+                />
+                <h1 className="hero-title">HK Tourism Recommender</h1>
+              </motion.div>
+
+              <motion.p
+                initial={{ y: 20, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                transition={{ delay: 0.4 }}
+                className="hero-subtitle"
+              >
+                Discover the best attractions, routes, and hidden gems in Hong
+                Kong
+              </motion.p>
+
+              <motion.div
+                initial={{ scale: 0.9, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                transition={{ delay: 0.6 }}
+              >
+                <div className="hero-stats">
+                  <div className="hero-stat-card">
+                    <span className="hero-stat-label">Live Weather</span>
+                    <p className="hero-stat-value">
+                      {weather?.temperature?.data?.[0]?.value
+                        ? `${weather.temperature.data[0].value}°C`
+                        : "N/A"}
+                    </p>
+                  </div>
+
+                  <div className="hero-stat-card">
+                    <span className="hero-stat-label">Attractions</span>
+                    <p className="hero-stat-value">
+                      {data?.length ? `${data.length}+` : "0"}
+                    </p>
+                  </div>
+
+                  <div className="hero-stat-card">
+                    <span className="hero-stat-label">Districts</span>
+                    <p className="hero-stat-value">5</p>
+                  </div>
+                </div>
+              </motion.div>
+            </div>
+          </div>
+        </motion.div>
+
+        <div className="controls">
+          <input
+            type="text"
+            placeholder="Search area, attraction, or address"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="search-bar"
+          />
+
+          <select
+            value={selectedDistrict}
+            onChange={(e) => setSelectedDistrict(e.target.value)}
+            className="district-dropdown"
+          >
+            <option value="">Select a district</option>
+            <option value="Kowloon">Kowloon</option>
+            <option value="Mong Kok">Mong Kok</option>
+            <option value="Wong Tai Sin">Wong Tai Sin</option>
+            <option value="Sham Shui Po">Sham Shui Po</option>
+            <option value="Lantau">Lantau</option>
+          </select>
+
+          <button
+            className="clear-btn"
+            onClick={() => {
+              setSearchQuery("");
+              setSelectedDistrict("");
+            }}
+          >
+            Clear Filters
+          </button>
+        </div>
+
+        <div className="view-toggle">
+          <button
+            className={viewMode === "attractions" ? "active" : ""}
+            onClick={() => setViewMode("attractions")}
+          >
+            Attractions
+          </button>
+          <button
+            className={viewMode === "fitness" ? "active" : ""}
+            onClick={() => setViewMode("fitness")}
+          >
+            Fitness Routes
+          </button>
+        </div>
+
+        <MapWithPins mergedData={filteredNearby} />
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+          className="weather-card"
+        >
+          <WeatherCard district="Cheung Chau" weatherData={weather} />
+        </motion.div>
+
+        <ForecastCard forecastData={forecast} />
+
+        <RecommendationCard
+          attraction={filteredRecommendation}
+          distance={dist}
+        />
+
+        <h2>Nearby Attractions</h2>
+        <AttractionList attractions={filteredNearby} />
       </div>
 
-      <div className="view-toggle">
-        <button
-          className={viewMode === "attractions" ? "active" : ""}
-          onClick={() => setViewMode("attractions")}
-        >
-          Attractions
-        </button>
-        <button
-          className={viewMode === "fitness" ? "active" : ""}
-          onClick={() => setViewMode("fitness")}
-        >
-          Fitness Routes
-        </button>
-      </div>
-      <MapWithPins mergedData={filteredNearby} />
-
-      <WeatherCard district="Cheung Chau" weatherData={weather} />
-      <ForecastCard forecastData={forecast} />
-
-      <RecommendationCard attraction={filteredRecommendation} distance={dist} />
-
-      <h2>Nearby Attractions</h2>
-      <AttractionList attractions={filteredNearby} />
-
-      <div className="chat-sidebar-container" style={{ flex: 1 }}>
+      {/* Right-side chat bar */}
+      <div className="chat-sidebar-container">
         <ChatSidebar userPos={userPos} viewMode={viewMode} />
       </div>
     </div>

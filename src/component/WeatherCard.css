@@ -1,19 +1,120 @@
+/* Weather Card - Modern Figma Design */
 .weather-card {
-  background: #dbe7ff;
-  border-radius: 12px;
-  padding: 20px;
-  margin: 20px auto;
-  width: 300px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-  text-align: center;
+  padding: 1.5rem;
+  background: linear-gradient(135deg, #38bdf8 0%, #3b82f6 50%, #2563eb 100%);
+  color: white;
+  border: none;
+  border-radius: 0.75rem;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  position: relative;
+  transition: transform 0.3s;
+  max-width: 360px;
+  margin: 2rem auto;
 }
 
-.weather-card h2 {
-  margin-top: 0;
-  font-size: 1.3rem;
+.weather-card:hover {
+  transform: scale(1.02);
+}
+
+.weather-bg-circle {
+  position: absolute;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 50%;
+  filter: blur(48px);
+}
+
+.weather-content {
+  position: relative;
+  z-index: 10;
+}
+
+.weather-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+}
+
+.weather-title {
+  font-size: 1.25rem;
+  margin-bottom: 0.25rem;
+}
+
+.weather-district {
+  font-size: 0.875rem;
+  opacity: 0.9;
 }
 
 .weather-icon {
-  font-size: 2rem;
-  margin: 10px 0;
+  width: 3rem;
+  height: 3rem;
+  opacity: 0.8;
+}
+
+.weather-temp {
+  display: flex;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  justify-content: center;
+}
+
+.weather-temp-icon {
+  width: 2.5rem;
+  height: 2.5rem;
+  margin-right: 0.75rem;
+}
+
+.weather-temp-value {
+  font-size: 3.75rem;
+  font-weight: 600;
+}
+
+.weather-condition {
+  font-size: 1.25rem;
+  margin-bottom: 1.5rem;
+  opacity: 0.9;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  justify-content: center;
+}
+
+.weather-stats {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+.weather-stat {
+  display: flex;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(4px);
+  border-radius: 0.75rem;
+  padding: 1rem;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  transition: all 0.3s;
+}
+
+.weather-stat:hover {
+  background: rgba(255, 255, 255, 0.3);
+  transform: scale(1.05);
+}
+
+.weather-stat-icon {
+  width: 1.5rem;
+  height: 1.5rem;
+  margin-right: 0.75rem;
+}
+
+.weather-stat-label {
+  font-size: 0.75rem;
+  opacity: 0.75;
+  display: block;
+}
+
+.weather-stat-value {
+  font-size: 1.5rem;
+  font-weight: 600;
 }

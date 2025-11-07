@@ -183,7 +183,7 @@ function retrieveByQuery({ text, userLat, userLon, viewMode = "attractions" }) {
     return b.textScore - a.textScore;
   });
 
-  const top = scored.slice(0, 6).filter((s) => s.dist === null || s.dist < 25); // limit very far ones
+  const top = scored.slice(0, 6).filter((s) => s.dist === null || s.dist < 25);
   return top.map((s) => ({
     id: s.item.id,
     name: s.item.name,
@@ -199,7 +199,6 @@ function retrieveByQuery({ text, userLat, userLon, viewMode = "attractions" }) {
 function generateFallbackResponse(prompt) {
   const lowerPrompt = prompt.toLowerCase();
 
-  // Extract context from the prompt
   const hasParks =
     lowerPrompt.includes("park") || lowerPrompt.includes("outdoor");
   const hasMuseums =
@@ -275,8 +274,7 @@ function generateFallbackResponse(prompt) {
   return response;
 }
 
-// ---------- Ollama API helper ----------
-// ---------- DeepSeek API helper (Official) ----------
+// ---------- DeepSeek API helper ----------
 async function callDeepSeekAPI(prompt) {
   const DEEPSEEK_API_KEY = process.env.DEEPSEEK_API_KEY;
 
@@ -294,7 +292,7 @@ async function callDeepSeekAPI(prompt) {
         Authorization: `Bearer ${DEEPSEEK_API_KEY}`,
       },
       body: JSON.stringify({
-        model: "deepseek-chat", // Use the model you have access to
+        model: "deepseek-chat",
         messages: [
           {
             role: "user",
@@ -307,7 +305,6 @@ async function callDeepSeekAPI(prompt) {
     });
 
     if (!response.ok) {
-      // Handle specific API errors
       if (response.status === 402) {
         throw new Error(
           "Insufficient balance in your DeepSeek account. Please top up."
@@ -322,11 +319,9 @@ async function callDeepSeekAPI(prompt) {
     }
 
     const data = await response.json();
-
     return data.choices[0].message.content;
   } catch (err) {
     console.error("Error calling DeepSeek API:", err.message);
-
     return generateFallbackResponse(prompt);
   }
 }
@@ -352,19 +347,36 @@ app.post("/api/chat", async (req, res) => {
 
     console.log("Retrieved items:", retrieved.length);
 
-    let factsText =
-      "Here are some nearby places (name, type, distance_km, address, website):\n";
-    retrieved.forEach((r) => {
-      factsText += `- ${r.name} | ${r.type || "unknown"} | ${
-        r.distance_km ?? "?"
-      } km | ${r.address} | ${r.website || "-"}\n`;
-    });
-    factsText +=
-      "\nYou are a friendly Hong Kong travel assistant. Answer the user's question using the facts provided above. If the places listed are relevant, reference them directly and provide helpful details. If none are relevant, say you could not find relevant attractions. Give a short recommendation (1-2 lines) and list the top 3 suggestions with reason.\n\nUser question: " +
-      message;
+    // Build a more flexible prompt that allows AI to use its own knowledge
+    let contextText = "";
+    if (retrieved.length > 0) {
+      contextText = "Here are some relevant places from our database:\n";
+      retrieved.forEach((r) => {
+        contextText += `- ${r.name} | ${r.type || "unknown"} | ${
+          r.distance_km ?? "?"
+        } km | ${r.address} | ${r.website || "-"}\n`;
+      });
+      contextText += "\n";
+    }
+
+    const systemPrompt = `You are a friendly and knowledgeable Hong Kong travel assistant. 
+
+INSTRUCTIONS:
+1. Use your general knowledge about Hong Kong tourism, weather patterns, crowd levels, and seasonal trends to answer questions
+2. When the user asks about specific places in our database (listed above), incorporate that information
+3. For general questions (weather, crowds, best times to visit, etc.), use your own expertise
+4. Provide practical, helpful advice for tourists
+5. If you mention specific attractions from our database, include their practical details
+6. Be conversational but informative
+
+Current context: ${contextText || "No specific locations found in database"}
+
+User question: ${message}
+
+Please provide a helpful response that combines your Hong Kong knowledge with any relevant location data above.`;
 
     console.log("Calling DeepSeek API...");
-    const aiReply = await callDeepSeekAPI(factsText);
+    const aiReply = await callDeepSeekAPI(systemPrompt);
 
     console.log("AI Reply:", aiReply);
 
