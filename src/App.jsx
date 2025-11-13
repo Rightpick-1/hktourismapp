@@ -358,7 +358,7 @@ function App() {
           </button>
         </div>
 
-        <MapWithPins mergedData={filteredNearby} />
+        <MapWithPins mergedData={viewMode === "fitness" ? fitnessData : data} />
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
